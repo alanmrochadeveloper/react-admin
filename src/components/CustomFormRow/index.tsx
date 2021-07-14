@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -31,33 +30,31 @@ const formControl = (
 ) => {
   switch (type) {
     case FormTypes.CHECKBOX:
-      console.log(
-        'realmente entrou no check form type and type itself = ',
-        FormTypes.CHECKBOX,
-        type
-      )
       return (
         <>
           {options.length > 0 && (
             <FormControl component="fieldset">
-              <FormLabel component="legend">{name}</FormLabel>
+              <FormLabel component="legend">{`${label}: `}</FormLabel>
               <FormGroup>
-                {options.map(({ title }, idx) => (
-                  <FormControlLabel
-                    key={name + title}
-                    name={name}
-                    control={
-                      <Checkbox
-                        checked={state[title + idx]}
-                        onChange={handleChange}
-                        name={title + idx}
-                      />
-                    }
-                    label={title}
-                  />
-                ))}
+                {options.map(({ title, value }, idx: number) => {
+                  return (
+                    <FormControlLabel
+                      key={name + title}
+                      control={
+                        <Checkbox
+                          checked={state[name]}
+                          onChange={handleChange}
+                          name={name}
+                          id={idx.toString()}
+                          value={value}
+                        />
+                      }
+                      label={title}
+                    />
+                  )
+                })}
               </FormGroup>
-              <FormHelperText>Be careful</FormHelperText>
+              <FormHelperText>Alert</FormHelperText>
             </FormControl>
           )}
         </>
@@ -72,7 +69,8 @@ const formControl = (
             value={state[name]}
             name={name}
             onChange={handleSelectChange}
-            variant={variant}
+            variant="standard"
+            defaultValue="Type"
           >
             {options.length > 0 &&
               options.map(({ title, value }) => (
@@ -83,9 +81,7 @@ const formControl = (
           </Select>
         </FormControl>
       )
-      break
     default:
-      console.log('caiu no default form type and type itself = ', FormTypes.CHECKBOX, type)
       return (
         <TextField
           name={name}
@@ -116,11 +112,9 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   parentState
 }: CustomFormRowProps) => {
   const [control, setControl] = React.useState<React.ReactElement>()
-  // this is for the control itself
 
-  // this is for input types like, text, email, password
-  const [state, setState] = React.useState<IOption[]>([])
-  // const [values, setValues] = React.useState<any>([])
+  const [state, setState] = React.useState<IFormControl[]>([])
+  const [checks, setChecks] = React.useState<IOption[]>(options)
 
   const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setState({ ...state, [name]: event.target.value as string })
@@ -128,7 +122,18 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (type) {
       case FormTypes.CHECKBOX:
-        setState({ ...state, [event.target.name]: event.target.checked })
+        setChecks([
+          ...checks,
+          (checks[event.target.id] = {
+            ...checks[event.target.id],
+            checked: event.target.checked,
+            value: event.target.value
+          })
+        ])
+        setState({
+          ...state,
+          [event.target.name]: checks
+        })
         break
       case FormTypes.SELECT:
         break
@@ -138,7 +143,6 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   }
 
   React.useEffect(() => {
-    console.log('printing the current type = ', type)
     setControl(
       formControl(
         name,
@@ -158,16 +162,6 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   React.useEffect(() => {
     setParentState({ ...parentState, [name]: state[name] })
   }, [state])
-
-  React.useEffect(() => {
-    // console.log('component did update')
-  })
-
-  React.useEffect(() => {
-    return () => {
-      // console.log('component did unmount')
-    }
-  })
 
   return (
     <>

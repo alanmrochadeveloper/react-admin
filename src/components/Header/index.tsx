@@ -341,8 +341,8 @@ const Header: React.FC<HeaderProps> = ({
         <Divider />
         <List>
           {['Inbox', 'Starred'].map((text, index) => (
-            <Link to="/users" style={{ textDecoration: 'none' }}>
-              <ListItem button key={text}>
+            <Link key={text} to="/users" style={{ textDecoration: 'none' }}>
+              <ListItem button>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>
@@ -352,8 +352,8 @@ const Header: React.FC<HeaderProps> = ({
         <Divider />
         <List>
           {['All mail', 'Trash'].map((text, index) => (
-            <Link to="/" style={{ textDecoration: 'none' }}>
-              <ListItem button key={text}>
+            <Link key={text} to="/" style={{ textDecoration: 'none' }}>
+              <ListItem button>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>

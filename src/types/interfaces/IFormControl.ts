@@ -1,4 +1,4 @@
-import { FormTypes } from '../enums/form-types.enum';
+import { FormTypes } from '../enums/form-types.enum'
 import { IOption } from './IOption'
 
 export interface IFormControl {

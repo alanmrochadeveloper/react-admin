@@ -30,7 +30,7 @@ const CustomForm: React.FC<CustomFormProps> = ({ formControls }: CustomFormProps
               />
             </Grid>
           ))}
-        <Button type="submit" variant="outlined">
+        <Button type="submit" variant="outlined" style={{ marginRight: '1.9rem' }}>
           Submit
         </Button>
         <Button type="reset" variant="outlined">

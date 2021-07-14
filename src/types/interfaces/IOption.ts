@@ -1,5 +1,5 @@
 export interface IOption {
-  title: string
+  title?: string
   checked?: boolean
-  value: string
+  value?: string
 }

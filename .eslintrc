@@ -91,6 +91,7 @@
     "react/jsx-one-expression-per-line": "off",
     "no-prototype-builtins": "off",
     "no-nested-ternary": "off",
+    "array-callback-return": "off",
     "prettier/prettier": [
       "error",
       {
