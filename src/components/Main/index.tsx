@@ -3,11 +3,11 @@ import React from 'react'
 
 interface MainProps {
   children: React.ReactElement[]
-  drawerWidthParent: number
+  // drawerWidthParent: number
 }
-const Main: React.FC<MainProps> = ({ drawerWidthParent, children }: MainProps) => {
+const Main: React.FC<MainProps> = ({ children }: MainProps) => {
   return (
-    <main style={{ paddingTop: `4rem` }}>
+    <main>
       <Container fixed maxWidth="sm">
         {children}
       </Container>

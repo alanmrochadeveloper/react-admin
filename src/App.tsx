@@ -10,16 +10,16 @@ import Emails from './pages/Emails'
 import { mockUsers } from './Mock/users'
 import Register from './pages/Register'
 import Login from './pages/Login'
+import RegisterTest from './pages/Register/RegisterTest'
 
 function App() {
-  const [drawerWidthParent, setDrawerWidthParent] = React.useState<number>(240)
   const users = mockUsers
   return (
     <Router>
       <div className="App">
-        <Header drawerWidthParent={drawerWidthParent} setDrawerWidthParent={setDrawerWidthParent} />
+        {/* <Header  />  Use another header here, since this one is the dashboard header */}
         <Switch>
-          <Main drawerWidthParent={drawerWidthParent}>
+          <Main>
             <Route exact path="/">
               <Dashboard />
             </Route>
@@ -34,6 +34,9 @@ function App() {
             </Route>
             <Route exact path="/login">
               <Login />
+            </Route>
+            <Route exact path="/registertest">
+              <RegisterTest />
             </Route>
           </Main>
         </Switch>

@@ -12,9 +12,12 @@ import {
   TextField
 } from '@material-ui/core'
 import React, { Dispatch } from 'react'
-import { FormTypes } from '../../types/enums/form-types.enum'
-import { IFormControl } from '../../types/interfaces/IFormControl'
-import { IOption } from '../../types/interfaces/IOption'
+// eslint-disable-next-line max-len
+// import { FormTypes } from '../../types/enums/form-types.enum' commented out for reusability purposes
+// import { IFormControl } from '../../types/interfaces/IFormControl'
+// import { IOption } from '../../types/interfaces/IOption'
+
+// all types and interfaces were imported here for reusability
 
 const formControl = (
   name: string,
@@ -26,7 +29,8 @@ const formControl = (
   variant: 'outlined' | 'standard' | 'filled' | undefined = 'outlined',
   state: any,
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-  handleSelectChange: (event: React.ChangeEvent<{ value: unknown }>) => void
+  handleSelectChange: (event: React.ChangeEvent<{ value: unknown }>) => void,
+  hiddenConstValue?: string
 ) => {
   switch (type) {
     case FormTypes.CHECKBOX:
@@ -81,6 +85,18 @@ const formControl = (
           </Select>
         </FormControl>
       )
+    case FormTypes.HIDDEN:
+      return (
+        <TextField
+          name={name}
+          type={type}
+          label={label}
+          placeholder={placeholder}
+          variant={variant}
+          value={hiddenConstValue}
+          onChange={handleChange}
+        />
+      )
     default:
       return (
         <TextField
@@ -95,6 +111,7 @@ const formControl = (
       )
   }
 }
+
 interface CustomFormRowProps extends IFormControl {
   index: number
   setParentState: Dispatch<any>
@@ -105,11 +122,14 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   type,
   label,
   placeholder,
-  options,
+  options = [],
   index,
-  variant,
+  variant = 'outlined',
+  value = '',
+  hiddenConstValue = '',
   setParentState,
-  parentState
+  parentState,
+  regexes = []
 }: CustomFormRowProps) => {
   const [control, setControl] = React.useState<React.ReactElement>()
 
@@ -154,7 +174,8 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         variant,
         state,
         handleChange,
-        handleSelectChange
+        handleSelectChange,
+        hiddenConstValue
       )
     )
   }, [])
@@ -170,3 +191,38 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   )
 }
 export default CustomFormRow
+
+export enum FormTypes {
+  TEXT = 'text',
+  EMAIL = 'email',
+  PASSWORD = 'password',
+  CHECKBOX = 'checkbox',
+  SELECT = 'select',
+  HIDDEN = 'hidden'
+}
+
+export interface IOption {
+  title?: string
+  checked?: boolean
+  value?: string
+}
+export interface IFormControl {
+  name: string
+  type: FormTypes
+  label: string
+  placeholder: string
+  variant?: 'outlined' | 'standard' | 'filled' | undefined
+  value?: string
+  options?: IOption[]
+  regexes?: IRegex[]
+  hiddenConstValue?: string
+}
+
+export interface IRegex {
+  description?: string
+  info?: string
+  warn?: string
+  error?: string
+  passed: boolean
+  value: any
+}

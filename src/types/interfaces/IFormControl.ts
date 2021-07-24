@@ -1,5 +1,6 @@
 import { FormTypes } from '../enums/form-types.enum'
 import { IOption } from './IOption'
+import { IRegex } from './IRegex'
 
 export interface IFormControl {
   name: string
@@ -9,4 +10,5 @@ export interface IFormControl {
   variant?: 'outlined' | 'standard' | 'filled' | undefined
   value?: string
   options?: IOption[]
+  regexes?: IRegex[]
 }

@@ -1,5 +1,6 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
 import React from 'react'
+import DashboardWrapper from '../../components/DashboardWrapper'
 import UserTableRow from '../../components/UserTableRow'
 import { IUser } from '../../types/interfaces/IUser'
 
@@ -8,7 +9,7 @@ interface UsersProps {
 }
 const Users: React.FC<UsersProps> = ({ users }: UsersProps) => {
   return (
-    <div className="usersTable">
+    <DashboardWrapper>
       <TableContainer>
         <Table aria-label="simple table">
           <TableHead>
@@ -27,7 +28,7 @@ const Users: React.FC<UsersProps> = ({ users }: UsersProps) => {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </DashboardWrapper>
   )
 }
 export default Users

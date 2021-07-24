@@ -24,6 +24,7 @@ import MoreIcon from '@material-ui/icons/MoreVert'
 import SearchIcon from '@material-ui/icons/Search'
 import { Badge, Hidden, Menu, MenuItem } from '@material-ui/core'
 import { Link } from 'react-router-dom'
+import { drawerNavButtons } from '../../Mock/drawerNavButtons'
 
 const drawerWidth = 240
 
@@ -143,14 +144,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 interface HeaderProps {
-  drawerWidthParent: number
-  setDrawerWidthParent: Dispatch<SetStateAction<number>>
+  // drawerWidthParent: number
+  // setDrawerWidthParent: Dispatch<SetStateAction<number>>
 }
 
-const Header: React.FC<HeaderProps> = ({
-  drawerWidthParent,
-  setDrawerWidthParent
-}: HeaderProps) => {
+const Header: React.FC<HeaderProps> = () => {
   const classes = useStyles()
   const theme = useTheme()
   const [open, setOpen] = React.useState(false)
@@ -340,8 +338,8 @@ const Header: React.FC<HeaderProps> = ({
         </div>
         <Divider />
         <List>
-          {['Inbox', 'Starred'].map((text, index) => (
-            <Link key={text} to="/users" style={{ textDecoration: 'none' }}>
+          {drawerNavButtons.map(({ text, url }, index) => (
+            <Link key={text} to={url} style={{ textDecoration: 'none' }}>
               <ListItem button>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={text} />

@@ -1,24 +1,30 @@
-import { Box, Typography } from '@material-ui/core'
+import { Box, Grid, Typography } from '@material-ui/core'
 import React from 'react'
 import { createControlsData } from '../../common/create-form-control-data.function'
 import CustomForm from '../../components/CustomForm'
-import { FormTypes } from '../../types/enums/form-types.enum'
-import { IFormControl } from '../../types/interfaces/IFormControl'
+import { FormTypes, IFormControl } from '../../components/CustomFormRow'
 
 interface LoginProps {}
 
 const Login: React.FC<LoginProps> = () => {
   const controls: IFormControl[] = [
-    createControlsData('username', FormTypes.TEXT, 'Username', 'Your Username', null),
-    createControlsData('password', FormTypes.PASSWORD, 'Password', 'Your password', null)
+    createControlsData('username', FormTypes.TEXT, 'Username', 'Your Username'),
+    createControlsData('password', FormTypes.PASSWORD, 'Password', 'Your password')
   ]
+
+  const postUrl = 'localhost:8000/anything'
+
   return (
     <>
       <Box>
-        <Typography variant="h4">Login</Typography>
-        <Box>
-          <CustomForm formControls={controls} />
-        </Box>
+        <Grid container alignContent="center" direction="column">
+          <Grid item>
+            <Typography variant="h4" style={{ textAlign: 'center' }}>
+              Login
+            </Typography>
+          </Grid>
+          <CustomForm formControls={controls} postUrl={postUrl} header="Entrar" />
+        </Grid>
       </Box>
     </>
   )

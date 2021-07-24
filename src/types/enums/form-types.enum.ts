@@ -3,5 +3,6 @@ export enum FormTypes {
   EMAIL = 'email',
   PASSWORD = 'password',
   CHECKBOX = 'checkbox',
-  SELECT = 'select'
+  SELECT = 'select',
+  HIDDEN = 'hidden'
 }

@@ -49,6 +49,7 @@
         "ignoreTypeValueShadow": true
       }
     ],
+    "react/require-default-props": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/class-name-casing": "off",
     "@typescript-eslint/interface-name-prefix": "off",
@@ -75,6 +76,7 @@
       1,
       {
         "extensions": [
+          ".jsx",
           ".tsx"
         ]
       }
