@@ -2,7 +2,7 @@ import { Box, Grid } from '@material-ui/core'
 import React from 'react'
 import { createControlsData } from '../../common/create-form-control-data.function'
 import CustomForm from '../../components/CustomForm'
-import { FormTypes, IFormControl } from '../../components/CustomFormRow'
+import { FormTypes, IFormControl } from '../../components/CustomForm/FormRow'
 // import { FormTypes } from '../../types/enums/form-types.enum'
 // import { IFormControl } from '../../types/interfaces/IFormControl'
 
@@ -34,12 +34,18 @@ const Register: React.FC<RegisterProps> = () => {
       'Confirm password',
       'Confirm your password'
     ),
-    createControlsData('role_id', FormTypes.HIDDEN, 'role_id')
-    // createControlsData('checkPaymentPreferences', FormTypes.CHECKBOX, 'Payment preferences', '',[
-    //   { title: 'installment', checked: false, value: 'installment' },
-    //   { title: 'credit card', checked: false, value: 'creditCard' },
-    //   { title: 'debit card', checked: false, value: 'debitCard' }
-    // ]),
+    createControlsData('role_id', FormTypes.HIDDEN, 'role_id'),
+    createControlsData('teste', FormTypes.TEXT, 'Isso é um teste', 'apenas testando'),
+    createControlsData('areYouFoul', FormTypes.SELECT, 'Você é bobo?', '', [
+      { title: 'Selecione uma opção', checked: false, value: '' },
+      { title: 'Sim', checked: false, value: 'yes' },
+      { title: 'Não', checked: false, value: 'no' }
+    ]),
+    createControlsData('checkPaymentPreferences', FormTypes.CHECKBOX, 'Payment preferences', '', [
+      { title: 'installment', checked: true, value: 'installment' },
+      { title: 'credit card', checked: true, value: 'creditCard' },
+      { title: 'debit card', checked: false, value: 'debitCard' }
+    ])
     // createControlsData('types', FormTypes.SELECT, 'Type?', '', [
     //   { title: 'Specialist', checked: false, value: 'specialist' },
     //   { title: 'Joiner', checked: false, value: 'joiner' },
@@ -56,6 +62,7 @@ const Register: React.FC<RegisterProps> = () => {
         <Grid container direction="column" alignItems="center">
           <Grid item>
             <CustomForm
+              variant="outlined"
               formControls={controls}
               postUrl={postUrl}
               header="Cadastro"
@@ -63,6 +70,7 @@ const Register: React.FC<RegisterProps> = () => {
               resetButtonText="Resetar"
               googleLogin
               googleButtonText="login com o google"
+              test
             />
           </Grid>
         </Grid>

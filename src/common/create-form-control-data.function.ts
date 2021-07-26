@@ -3,7 +3,7 @@
 // import { IOption } from '../types/interfaces/IOption'
 // import { IRegex } from '../types/interfaces/IRegex'
 
-import { FormTypes, IFormControl, IOption, IRegex } from '../components/CustomFormRow'
+import { FormTypes, IFormControl, IOption, IRegex } from '../components/CustomForm/FormRow'
 
 export const createControlsData = (
   name = 'none', // names must be unique

@@ -1,11 +1,12 @@
 import { Button, Grid, Typography } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
-import CustomFormRow from '../CustomFormRow'
+import CustomFormRow, { IFormControl } from './FormRow'
 
 interface CustomFormProps {
   formControls: IFormControl[]
   postUrl: string
+  variant?: 'outlined' | 'standard' | 'filled'
   header?: string
   submitButtonText?: string
   resetButtonText?: string
@@ -15,26 +16,29 @@ interface CustomFormProps {
   googleLogin?: boolean
   facebookLogin?: boolean
   githubLogin?: boolean
+  test?: boolean
 }
 const CustomForm: React.FC<CustomFormProps> = ({
   formControls,
   postUrl,
+  variant = 'outlined',
   header = 'Form',
   submitButtonText = 'Submit',
   resetButtonText = 'Reset',
   googleButtonText = 'Login with google',
   facebookButtonText = 'Login with facebook',
   githubButtonText = 'Login with github',
-  googleLogin = true,
+  googleLogin = false,
   facebookLogin = false,
-  githubLogin = false
+  githubLogin = false,
+  test = false
 }: CustomFormProps) => {
   const [parentState, setParentState] = React.useState<any>({})
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement> | undefined) => {
     event?.preventDefault()
-    const data = await axios.post(postUrl, parentState)
-    console.log(`data from request = ${data}`)
+    // const data = await axios.post(postUrl, parentState)
+    // console.log(`data from request = ${data}`)
     console.log('form submitted, parent state = ', parentState)
   }
 
@@ -53,6 +57,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
                 {' '}
                 <CustomFormRow
                   {...form}
+                  variant={variant}
                   index={index}
                   setParentState={setParentState}
                   parentState={parentState}
@@ -113,45 +118,27 @@ const CustomForm: React.FC<CustomFormProps> = ({
               </Grid>
             </Grid>
           ) : null}
+          {test ? (
+            <Grid
+              container
+              item
+              justifyContent="space-evenly"
+              style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
+            >
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => console.log(`state = ${JSON.stringify(parentState)}`)}
+                >
+                  getState
+                </Button>
+              </Grid>
+            </Grid>
+          ) : null}
         </form>
       </Grid>
     </>
   )
 }
 export default CustomForm
-
-interface IFormControl {
-  name: string
-  type: FormTypes
-  label: string
-  placeholder: string
-  variant?: 'outlined' | 'standard' | 'filled' | undefined
-  value?: string
-  options?: IOption[]
-  regexes?: IRegex[]
-  hiddenConstValue?: string
-}
-
-interface IOption {
-  title?: string
-  checked?: boolean
-  value?: string
-}
-
-interface IRegex {
-  description?: string
-  info?: string
-  warn?: string
-  error?: string
-  passed: boolean
-  value: any
-}
-
-enum FormTypes {
-  TEXT = 'text',
-  EMAIL = 'email',
-  PASSWORD = 'password',
-  CHECKBOX = 'checkbox',
-  SELECT = 'select',
-  HIDDEN = 'hidden'
-}

@@ -6,9 +6,7 @@ import {
   FormGroup,
   FormHelperText,
   FormLabel,
-  InputLabel,
   MenuItem,
-  Select,
   TextField
 } from '@material-ui/core'
 import React, { Dispatch } from 'react'
@@ -29,7 +27,7 @@ const formControl = (
   variant: 'outlined' | 'standard' | 'filled' | undefined = 'outlined',
   state: any,
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-  handleSelectChange: (event: React.ChangeEvent<{ value: unknown }>) => void,
+  // handleSelectChange: (event: React.ChangeEvent<{ value: unknown }>) => void,
   hiddenConstValue?: string
 ) => {
   switch (type) {
@@ -41,16 +39,23 @@ const formControl = (
               <FormLabel component="legend">{`${label}: `}</FormLabel>
               <FormGroup>
                 {options.map(({ title, value }, idx: number) => {
+                  console.log(
+                    `state = ${JSON.stringify(state)}, state[name] = ${state[name]},
+                     value = ${value}, idx = ${idx}, state[name[idx]] =  ${state[name[idx]]},
+                     name = ${name}`
+                  )
+
                   return (
                     <FormControlLabel
                       key={name + title}
                       control={
                         <Checkbox
-                          checked={state[name]}
+                          checked={state[name[idx]]}
                           onChange={handleChange}
                           name={name}
                           id={idx.toString()}
                           value={value}
+                          defaultChecked={options[idx].checked}
                         />
                       }
                       label={title}
@@ -65,38 +70,23 @@ const formControl = (
       )
     case FormTypes.SELECT:
       return (
-        <FormControl style={{ minWidth: '12.5rem', maxHeight: '4rem' }}>
-          <InputLabel id={`${name}-select-label`}>{label}</InputLabel>
-          <Select
-            labelId={`${name}-select-label`}
-            id={`${name}-select-label`}
-            value={state[name]}
-            name={name}
-            onChange={handleSelectChange}
-            variant="standard"
-            defaultValue="Type"
-          >
-            {options.length > 0 &&
-              options.map(({ title, value }) => (
-                <MenuItem key={title + value} value={value}>
-                  {title}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
+        <TextField
+          variant={variant}
+          label={label}
+          select
+          style={{ width: '100%' }}
+          onChange={handleChange}
+        >
+          {options.length > 0 &&
+            options.map(({ title, value }, idx) => (
+              <MenuItem key={title + value} value={value} selected={idx === 0}>
+                {title}
+              </MenuItem>
+            ))}
+        </TextField>
       )
     case FormTypes.HIDDEN:
-      return (
-        <TextField
-          name={name}
-          type={type}
-          label={label}
-          placeholder={placeholder}
-          variant={variant}
-          value={hiddenConstValue}
-          onChange={handleChange}
-        />
-      )
+      return <input name={name} type={type} value={hiddenConstValue} />
     default:
       return (
         <TextField
@@ -136,26 +126,23 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   const [state, setState] = React.useState<IFormControl[]>([])
   const [checks, setChecks] = React.useState<IOption[]>(options)
 
-  const handleSelectChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setState({ ...state, [name]: event.target.value as string })
-  }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (type) {
       case FormTypes.CHECKBOX:
-        setChecks([
-          ...checks,
-          (checks[event.target.id] = {
-            ...checks[event.target.id],
-            checked: event.target.checked,
-            value: event.target.value
+        setChecks((prevState: IOption[]) => {
+          return prevState.map((item: IOption, idx: number) => {
+            if (idx !== Number(event.target.id)) {
+              return item
+            }
+            return {
+              ...item,
+              checked: event.target.checked
+            }
           })
-        ])
-        setState({
-          ...state,
-          [event.target.name]: checks
         })
         break
       case FormTypes.SELECT:
+        setState({ ...state, [name]: event.target.value as string })
         break
       default:
         setState({ ...state, [event.target.name]: event.target.value })
@@ -172,13 +159,21 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         options,
         index,
         variant,
-        state,
+        parentState,
         handleChange,
-        handleSelectChange,
         hiddenConstValue
       )
     )
+
+    console.log(`state inside component did mount = ${JSON.stringify(state)}`)
   }, [])
+
+  React.useEffect(() => {
+    setState({
+      ...state,
+      [name]: checks
+    })
+  }, [checks])
 
   React.useEffect(() => {
     setParentState({ ...parentState, [name]: state[name] })
