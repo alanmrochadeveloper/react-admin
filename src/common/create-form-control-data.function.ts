@@ -11,7 +11,8 @@ export const createControlsData = (
   label = 'text',
   placeholder = 'text here',
   options?: IOption[],
-  regexes?: IRegex[]
+  regexes?: IRegex[],
+  hiddenConstValue?: string
 ): IFormControl => {
-  return { name, type, label, placeholder, options, regexes }
+  return { name, type, label, placeholder, options, regexes, hiddenConstValue }
 }

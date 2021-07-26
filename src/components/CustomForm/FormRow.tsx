@@ -10,6 +10,7 @@ import {
   TextField
 } from '@material-ui/core'
 import React, { Dispatch } from 'react'
+import { isConstructorDeclaration } from 'typescript'
 // eslint-disable-next-line max-len
 // import { FormTypes } from '../../types/enums/form-types.enum' commented out for reusability purposes
 // import { IFormControl } from '../../types/interfaces/IFormControl'
@@ -39,18 +40,12 @@ const formControl = (
               <FormLabel component="legend">{`${label}: `}</FormLabel>
               <FormGroup>
                 {options.map(({ title, value }, idx: number) => {
-                  console.log(
-                    `state = ${JSON.stringify(state)}, state[name] = ${state[name]},
-                     value = ${value}, idx = ${idx}, state[name[idx]] =  ${state[name[idx]]},
-                     name = ${name}`
-                  )
-
                   return (
                     <FormControlLabel
                       key={name + title}
                       control={
                         <Checkbox
-                          checked={state[name[idx]]}
+                          checked={state?.[name[idx]]}
                           onChange={handleChange}
                           name={name}
                           id={idx.toString()}
@@ -86,6 +81,8 @@ const formControl = (
         </TextField>
       )
     case FormTypes.HIDDEN:
+      console.log(`inside form render hidden value = ${hiddenConstValue}`)
+
       return <input name={name} type={type} value={hiddenConstValue} />
     default:
       return (
@@ -95,7 +92,7 @@ const formControl = (
           label={label}
           placeholder={placeholder}
           variant={variant}
-          value={state[name]}
+          value={state?.[name]}
           onChange={handleChange}
         />
       )
@@ -115,7 +112,7 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   options = [],
   index,
   variant = 'outlined',
-  value = '',
+  value = ' ',
   hiddenConstValue = '',
   setParentState,
   parentState,
@@ -123,8 +120,9 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
 }: CustomFormRowProps) => {
   const [control, setControl] = React.useState<React.ReactElement>()
 
-  const [state, setState] = React.useState<IFormControl[]>([])
+  const [state, setState] = React.useState<any | null | undefined>({ ...parentState }) //
   const [checks, setChecks] = React.useState<IOption[]>(options)
+  // const [hiddenValue, setHiddenValue] = React.useState<string>(hiddenConstValue)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (type) {
@@ -145,6 +143,7 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         setState({ ...state, [name]: event.target.value as string })
         break
       default:
+        console.log(`state = ${JSON.stringify(state)}`)
         setState({ ...state, [event.target.name]: event.target.value })
     }
   }
@@ -164,19 +163,34 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         hiddenConstValue
       )
     )
-
-    console.log(`state inside component did mount = ${JSON.stringify(state)}`)
+    console.log(`component did mount, state value = ${state[name]}`)
+    console.log(`component did mount, hidden value = ${hiddenConstValue}`)
+    console.log(`component did mount, name value = ${name}`)
+    setState((prevState: any) => {
+      console.log(`value = ${value}`)
+      const val = hiddenConstValue || ''
+      return { ...prevState, [name]: val }
+    })
   }, [])
 
   React.useEffect(() => {
-    setState({
-      ...state,
-      [name]: checks
+    setState((prevState: any) => {
+      return {
+        ...prevState,
+        [name]: checks
+      }
     })
   }, [checks])
 
   React.useEffect(() => {
-    setParentState({ ...parentState, [name]: state[name] })
+    console.log(`component did update, state changed, hidden value = ${hiddenConstValue}`)
+    console.log(`component did update, state changed, name value = ${name}`)
+    console.log(`component did update, state changed, value value = ${value}`)
+    console.log(`component did update state changed, state value = ${JSON.stringify(state[name])}`)
+    setParentState((prevState: any) => {
+      return { ...prevState, [name]: hiddenConstValue || state[name] || '' }
+    })
+    // setParentState({ ...parentState, [name]: state[name] })
   }, [state])
 
   return (

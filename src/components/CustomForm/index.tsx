@@ -1,7 +1,7 @@
 import { Button, Grid, Typography } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
-import CustomFormRow, { IFormControl } from './FormRow'
+import CustomFormRow, { FormTypes, IFormControl } from './FormRow'
 
 interface CustomFormProps {
   formControls: IFormControl[]
@@ -33,12 +33,43 @@ const CustomForm: React.FC<CustomFormProps> = ({
   githubLogin = false,
   test = false
 }: CustomFormProps) => {
-  const [parentState, setParentState] = React.useState<any>({})
+  const [parentState, setParentState] = React.useState<any | null | undefined>(null)
+
+  const handleReset = () => {
+    setParentState((prevState: any) => {
+      let newState: any = { ...prevState }
+      for (const prop in prevState) {
+        if (typeof prop === 'string') {
+          newState = { ...newState, [prop]: '' }
+        }
+      }
+      return { ...prevState, ...newState }
+    })
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement> | undefined) => {
     event?.preventDefault()
-    // const data = await axios.post(postUrl, parentState)
-    // console.log(`data from request = ${data}`)
+    let data = null
+    console.log(`JSON.stringify(parentState) = ${JSON.stringify(parentState)}`)
+    console.log(`JSON.parse(parentState) = ${JSON.parse(JSON.stringify(parentState))}`)
+    try {
+      data = await axios.post(postUrl, parentState)
+    } catch (error) {
+      console.log(`error = ${JSON.stringify(error)}`)
+      if (error) {
+        if (error.response) {
+          console.log(error.response.data)
+          console.log(error.response.status)
+          console.log(error.response.headers)
+        }
+
+        // eslint-disable-next-line guard-for-in
+        for (const prop in error) {
+          console.log(`${prop} = ${JSON.stringify(error[prop])}`)
+        }
+      }
+    }
+    console.log(`data from request = ${JSON.stringify(data?.data)}`)
     console.log('form submitted, parent state = ', parentState)
   }
 
@@ -71,7 +102,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
               </Button>
             </Grid>
             <Grid item>
-              <Button type="reset" variant="outlined">
+              <Button type="reset" variant="outlined" onClick={handleReset}>
                 {resetButtonText}
               </Button>
             </Grid>

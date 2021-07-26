@@ -47,10 +47,10 @@ const RegisterTest: React.FC<RegisterTestProps> = () => {
 
   React.useEffect(() => {
     const _getRole = async () => {
-      const response = await axios.get('http://localhost:8000/api/roles')
-      return response
+      // const response = await axios.get('http://localhost:8000/api/roles')
+      // return response
     }
-    console.log(`roles = ${JSON.stringify(_getRole())}`)
+    // console.log(`roles = ${JSON.stringify(_getRole())}`)
   }, [])
 
   return (

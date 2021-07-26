@@ -8,6 +8,7 @@ import { FormTypes, IFormControl } from '../../components/CustomForm/FormRow'
 
 interface RegisterProps {}
 const Register: React.FC<RegisterProps> = () => {
+  const initialRoleID = '1207d2d8-4c67-40b6-b8f8-be981b69b2cf'
   const controls: IFormControl[] = [
     createControlsData('first_name', FormTypes.TEXT, 'First Name', 'Your first name'),
     createControlsData('last_name', FormTypes.TEXT, 'Last Name', 'Your last name'),
@@ -34,18 +35,19 @@ const Register: React.FC<RegisterProps> = () => {
       'Confirm password',
       'Confirm your password'
     ),
-    createControlsData('role_id', FormTypes.HIDDEN, 'role_id'),
-    createControlsData('teste', FormTypes.TEXT, 'Isso é um teste', 'apenas testando'),
-    createControlsData('areYouFoul', FormTypes.SELECT, 'Você é bobo?', '', [
-      { title: 'Selecione uma opção', checked: false, value: '' },
-      { title: 'Sim', checked: false, value: 'yes' },
-      { title: 'Não', checked: false, value: 'no' }
-    ]),
-    createControlsData('checkPaymentPreferences', FormTypes.CHECKBOX, 'Payment preferences', '', [
-      { title: 'installment', checked: true, value: 'installment' },
-      { title: 'credit card', checked: true, value: 'creditCard' },
-      { title: 'debit card', checked: false, value: 'debitCard' }
-    ])
+    createControlsData('role_id', FormTypes.HIDDEN, 'role_id', '', [], [], initialRoleID)
+    // createControlsData('teste', FormTypes.TEXT, 'Isso é um teste', 'apenas testando'),
+    // createControlsData('areYouFoul', FormTypes.SELECT, 'Você é bobo?', '', [
+    //   { title: 'Selecione uma opção', checked: false, value: '' },
+    //   { title: 'Sim', checked: false, value: 'yes' },
+    //   { title: 'Não', checked: false, value: 'no' }
+    // ]),
+    // eslint-disable-next-line max-len
+    // createControlsData('checkPaymentPreferences', FormTypes.CHECKBOX, 'Payment preferences', '', [
+    //   { title: 'installment', checked: true, value: 'installment' },
+    //   { title: 'credit card', checked: true, value: 'creditCard' },
+    //   { title: 'debit card', checked: false, value: 'debitCard' }
+    // ])
     // createControlsData('types', FormTypes.SELECT, 'Type?', '', [
     //   { title: 'Specialist', checked: false, value: 'specialist' },
     //   { title: 'Joiner', checked: false, value: 'joiner' },
@@ -54,7 +56,7 @@ const Register: React.FC<RegisterProps> = () => {
     // ])
   ]
 
-  const postUrl = 'localhost:8000/register'
+  const postUrl = 'http://localhost:8000/api/register'
 
   return (
     <>
