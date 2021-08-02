@@ -1,11 +1,15 @@
 import { Button, Grid, Typography } from '@material-ui/core'
 import axios from 'axios'
 import React from 'react'
-import CustomFormRow, { FormTypes, IFormControl } from './FormRow'
+import { Redirect } from 'react-router-dom'
+import CustomFormRow from './FormRow'
+import { RequestType } from './types/enums/FormTypes'
+import { IAxiosRequest, IFormControl } from './types/interfaces'
+// import CustomFormRow, { FormTypes, IFormControl } from './FormRow'
 
 interface CustomFormProps {
   formControls: IFormControl[]
-  postUrl: string
+  axiosRequest: IAxiosRequest
   variant?: 'outlined' | 'standard' | 'filled'
   header?: string
   submitButtonText?: string
@@ -17,10 +21,11 @@ interface CustomFormProps {
   facebookLogin?: boolean
   githubLogin?: boolean
   test?: boolean
+  redirectUrl?: string
 }
 const CustomForm: React.FC<CustomFormProps> = ({
   formControls,
-  postUrl,
+  axiosRequest,
   variant = 'outlined',
   header = 'Form',
   submitButtonText = 'Submit',
@@ -31,9 +36,17 @@ const CustomForm: React.FC<CustomFormProps> = ({
   googleLogin = false,
   facebookLogin = false,
   githubLogin = false,
-  test = false
+  test = false,
+  redirectUrl = ''
 }: CustomFormProps) => {
   const [parentState, setParentState] = React.useState<any | null | undefined>(null)
+  const [isRegistered, setIsRegistered] = React.useState<boolean>(false)
+
+  const handleGetState = () => {
+    console.log(`
+      state = ${JSON.stringify(parentState)}
+    `)
+  }
 
   const handleReset = () => {
     setParentState((prevState: any) => {
@@ -50,31 +63,61 @@ const CustomForm: React.FC<CustomFormProps> = ({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement> | undefined) => {
     event?.preventDefault()
     let data = null
-    console.log(`JSON.stringify(parentState) = ${JSON.stringify(parentState)}`)
-    console.log(`JSON.parse(parentState) = ${JSON.parse(JSON.stringify(parentState))}`)
+    const { url, config } = axiosRequest
     try {
-      data = await axios.post(postUrl, parentState)
+      switch (axiosRequest.requestType) {
+        case RequestType.PATCH:
+          data = await axios.patch(url, parentState, config)
+          setIsRegistered(true)
+          break
+        case RequestType.PUT:
+          console.log(
+            `insider put request, url = ${url}, parentState = ${parentState}, config = ${config}`
+          )
+          data = await axios.put(url, parentState, config)
+          setIsRegistered(true)
+          break
+        default:
+          data = await axios.post(url, parentState, config)
+          setIsRegistered(true)
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error) {
-      console.log(`error = ${JSON.stringify(error)}`)
       if (error) {
-        if (error.response) {
-          console.log(error.response.data)
-          console.log(error.response.status)
-          console.log(error.response.headers)
-        }
-
-        // eslint-disable-next-line guard-for-in
-        for (const prop in error) {
-          console.log(`${prop} = ${JSON.stringify(error[prop])}`)
+        if (error?.response) {
+          console.log(`error response = ${JSON.stringify(error?.response)}`)
         }
       }
     }
-    console.log(`data from request = ${JSON.stringify(data?.data)}`)
-    console.log('form submitted, parent state = ', parentState)
   }
+  React.useEffect(() => {
+    console.log(`custom form did mount!`)
+    setParentState((prevState: any) => {
+      let newState: any = { ...prevState }
+      // eslint-disable-next-line guard-for-in
+      for (const prop in prevState) {
+        // eslint-disable-next-line no-loop-func
+        formControls.map(ctrl => {
+          // eslint-disable-next-line eqeqeq
+          if (prop === ctrl.name) {
+            newState = {
+              ...newState,
+              [prop]: ctrl.hiddenConstValue || ctrl.defaultInputValue || ctrl.value || ''
+            }
+          }
+        })
+      }
+      return { ...prevState, ...newState }
+    })
+    return () => {
+      console.log(`custom form unmounted`)
+      setParentState(null)
+    }
+  }, [])
 
   return (
     <>
+      {isRegistered && redirectUrl && <Redirect to={redirectUrl} />}
       <Grid container>
         <form onSubmit={handleSubmit} style={{ margin: '1rem' }}>
           <Grid item>
@@ -82,10 +125,9 @@ const CustomForm: React.FC<CustomFormProps> = ({
               {header}
             </Typography>
           </Grid>
-          {formControls.length > 0 &&
+          {formControls?.length > 0 &&
             formControls.map((form: IFormControl, index: number) => (
               <Grid item key={form.label}>
-                {' '}
                 <CustomFormRow
                   {...form}
                   variant={variant}
@@ -157,11 +199,7 @@ const CustomForm: React.FC<CustomFormProps> = ({
               style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}
             >
               <Grid item>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => console.log(`state = ${JSON.stringify(parentState)}`)}
-                >
+                <Button variant="outlined" color="secondary" onClick={handleGetState}>
                   getState
                 </Button>
               </Grid>

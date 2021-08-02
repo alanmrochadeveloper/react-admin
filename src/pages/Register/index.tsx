@@ -1,14 +1,17 @@
 import { Box, Grid } from '@material-ui/core'
 import React from 'react'
-import { createControlsData } from '../../common/create-form-control-data.function'
 import CustomForm from '../../components/CustomForm'
-import { FormTypes, IFormControl } from '../../components/CustomForm/FormRow'
-// import { FormTypes } from '../../types/enums/form-types.enum'
-// import { IFormControl } from '../../types/interfaces/IFormControl'
+import { FormTypes, RequestType } from '../../components/CustomForm/types/enums/FormTypes'
+import { IAxiosRequest, IFormControl } from '../../components/CustomForm/types/interfaces'
+import { createControlsData } from '../../components/CustomForm/Utils/CreateFormControl'
 
 interface RegisterProps {}
 const Register: React.FC<RegisterProps> = () => {
   const initialRoleID = '1207d2d8-4c67-40b6-b8f8-be981b69b2cf'
+  const axiosPost: IAxiosRequest = {
+    url: 'register',
+    requestType: RequestType.POST
+  }
   const controls: IFormControl[] = [
     createControlsData('first_name', FormTypes.TEXT, 'First Name', 'Your first name'),
     createControlsData('last_name', FormTypes.TEXT, 'Last Name', 'Your last name'),
@@ -18,6 +21,7 @@ const Register: React.FC<RegisterProps> = () => {
       FormTypes.PASSWORD,
       'Password',
       'Your password',
+      '',
       [],
       [
         {
@@ -35,7 +39,7 @@ const Register: React.FC<RegisterProps> = () => {
       'Confirm password',
       'Confirm your password'
     ),
-    createControlsData('role_id', FormTypes.HIDDEN, 'role_id', '', [], [], initialRoleID)
+    createControlsData('role_id', FormTypes.HIDDEN, 'role_id', '', '', [], [], initialRoleID)
     // createControlsData('teste', FormTypes.TEXT, 'Isso é um teste', 'apenas testando'),
     // createControlsData('areYouFoul', FormTypes.SELECT, 'Você é bobo?', '', [
     //   { title: 'Selecione uma opção', checked: false, value: '' },
@@ -56,8 +60,6 @@ const Register: React.FC<RegisterProps> = () => {
     // ])
   ]
 
-  const postUrl = 'http://localhost:8000/api/register'
-
   return (
     <>
       <Box style={{ padding: `2rem 0rem` }}>
@@ -66,13 +68,14 @@ const Register: React.FC<RegisterProps> = () => {
             <CustomForm
               variant="outlined"
               formControls={controls}
-              postUrl={postUrl}
+              axiosRequest={axiosPost}
               header="Cadastro"
               submitButtonText="Enviar"
               resetButtonText="Resetar"
               googleLogin
               googleButtonText="login com o google"
               test
+              redirectUrl="/login"
             />
           </Grid>
         </Grid>

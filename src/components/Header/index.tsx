@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
+import axios from 'axios'
 import clsx from 'clsx'
 import { createStyles, makeStyles, useTheme, Theme, alpha } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
@@ -23,8 +24,11 @@ import MailIcon from '@material-ui/icons/Mail'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import SearchIcon from '@material-ui/icons/Search'
 import { Badge, Hidden, Menu, MenuItem } from '@material-ui/core'
-import { Link } from 'react-router-dom'
+import { Link, NavLink, useHistory } from 'react-router-dom'
 import { drawerNavButtons } from '../../Mock/drawerNavButtons'
+import { IUser } from '../../types/interfaces/IUser'
+import { User } from '../../models/user'
+import './index.css'
 
 const drawerWidth = 240
 
@@ -154,6 +158,10 @@ const Header: React.FC<HeaderProps> = () => {
   const [open, setOpen] = React.useState(false)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [user, setUser] = React.useState<User>(new User())
+
+  const history = useHistory()
+
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
@@ -181,6 +189,13 @@ const Header: React.FC<HeaderProps> = () => {
     handleMobileMenuClose()
   }
 
+  const handleLogout = () => {
+    axios.post('logout', {}) // this empty is needed, because
+    // awe need to pass some data for post request,
+    // even it being an empty data
+    history.push('/login')
+  }
+
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget)
   }
@@ -195,8 +210,24 @@ const Header: React.FC<HeaderProps> = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={handleMenuClose}>User: {user?.name}</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose()
+          history.push('/profile')
+        }}
+      >
+        Profile
+      </MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose()
+          handleLogout()
+        }}
+      >
+        logout
+      </MenuItem>
     </Menu>
   )
 
@@ -240,8 +271,24 @@ const Header: React.FC<HeaderProps> = () => {
     </Menu>
   )
 
+  React.useEffect(() => {
+    ;(async () => {
+      try {
+        const { data } = await axios.get('user')
+        setUser(new User(data.id, data.first_name, data.last_name, data.email, data.role))
+      } catch (error) {
+        console.log(`error trying to get data from user, error obj = ${JSON.stringify(error)}`)
+      }
+    })()
+  }, [])
+
   return (
-    <div className={classes.root}>
+    <div
+      className={classes.root}
+      style={{
+        marginBottom: '6rem'
+      }}
+    >
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -316,8 +363,8 @@ const Header: React.FC<HeaderProps> = () => {
           </div>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      {user && renderMobileMenu}
+      {user && renderMenu}
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -339,12 +386,12 @@ const Header: React.FC<HeaderProps> = () => {
         <Divider />
         <List>
           {drawerNavButtons.map(({ text, url }, index) => (
-            <Link key={text} to={url} style={{ textDecoration: 'none' }}>
-              <ListItem button>
+            <NavLink exact key={text} to={url} style={{ textDecoration: 'none' }}>
+              <ListItem button selected={history.location.pathname === url}>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>
-            </Link>
+            </NavLink>
           ))}
         </List>
         <Divider />

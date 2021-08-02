@@ -11,4 +11,6 @@ export interface IFormControl {
   value?: string
   options?: IOption[]
   regexes?: IRegex[]
+  disabled?: boolean
+  deafultInputValue?: string
 }

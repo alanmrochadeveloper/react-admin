@@ -10,25 +10,20 @@ import {
   TextField
 } from '@material-ui/core'
 import React, { Dispatch } from 'react'
-import { isConstructorDeclaration } from 'typescript'
-// eslint-disable-next-line max-len
-// import { FormTypes } from '../../types/enums/form-types.enum' commented out for reusability purposes
-// import { IFormControl } from '../../types/interfaces/IFormControl'
-// import { IOption } from '../../types/interfaces/IOption'
-
-// all types and interfaces were imported here for reusability
+import { FormTypes } from './types/enums/FormTypes'
+import { IFormControl, IOption } from './types/interfaces'
 
 const formControl = (
   name: string,
   type: string,
   label: string,
   placeholder: string,
+  defaultInputValue: string,
   options: IOption[] = [],
   index: number,
   variant: 'outlined' | 'standard' | 'filled' | undefined = 'outlined',
   state: any,
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-  // handleSelectChange: (event: React.ChangeEvent<{ value: unknown }>) => void,
   hiddenConstValue?: string
 ) => {
   switch (type) {
@@ -71,18 +66,22 @@ const formControl = (
           select
           style={{ width: '100%' }}
           onChange={handleChange}
+          value={state?.[name]}
+          defaultValue={defaultInputValue}
         >
           {options.length > 0 &&
             options.map(({ title, value }, idx) => (
-              <MenuItem key={title + value} value={value} selected={idx === 0}>
+              <MenuItem
+                key={title + value}
+                value={value}
+                selected={state?.[name]?.[title + value]?.checked}
+              >
                 {title}
               </MenuItem>
             ))}
         </TextField>
       )
     case FormTypes.HIDDEN:
-      console.log(`inside form render hidden value = ${hiddenConstValue}`)
-
       return <input name={name} type={type} value={hiddenConstValue} />
     default:
       return (
@@ -90,10 +89,11 @@ const formControl = (
           name={name}
           type={type}
           label={label}
-          placeholder={placeholder}
+          placeholder={placeholder || ''}
           variant={variant}
           value={state?.[name]}
           onChange={handleChange}
+          defaultValue={defaultInputValue || ''}
         />
       )
   }
@@ -109,10 +109,11 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   type,
   label,
   placeholder,
+  defaultInputValue = '',
   options = [],
   index,
   variant = 'outlined',
-  value = ' ',
+  value = '',
   hiddenConstValue = '',
   setParentState,
   parentState,
@@ -120,9 +121,8 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
 }: CustomFormRowProps) => {
   const [control, setControl] = React.useState<React.ReactElement>()
 
-  const [state, setState] = React.useState<any | null | undefined>({ ...parentState }) //
+  const [state, setState] = React.useState<any | null | undefined>({ ...parentState })
   const [checks, setChecks] = React.useState<IOption[]>(options)
-  // const [hiddenValue, setHiddenValue] = React.useState<string>(hiddenConstValue)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (type) {
@@ -143,7 +143,6 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         setState({ ...state, [name]: event.target.value as string })
         break
       default:
-        console.log(`state = ${JSON.stringify(state)}`)
         setState({ ...state, [event.target.name]: event.target.value })
     }
   }
@@ -155,6 +154,7 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         type,
         label,
         placeholder,
+        defaultInputValue,
         options,
         index,
         variant,
@@ -163,14 +163,18 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         hiddenConstValue
       )
     )
-    console.log(`component did mount, state value = ${state[name]}`)
-    console.log(`component did mount, hidden value = ${hiddenConstValue}`)
-    console.log(`component did mount, name value = ${name}`)
     setState((prevState: any) => {
-      console.log(`value = ${value}`)
-      const val = hiddenConstValue || ''
+      const val = hiddenConstValue || state[name] || defaultInputValue || ''
+
       return { ...prevState, [name]: val }
     })
+    // eslint-disable-next-line no-unused-expressions
+
+    return () => {
+      console.log(`form row unmounted`)
+      setParentState(null)
+      setState(null)
+    }
   }, [])
 
   React.useEffect(() => {
@@ -183,14 +187,16 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   }, [checks])
 
   React.useEffect(() => {
-    console.log(`component did update, state changed, hidden value = ${hiddenConstValue}`)
-    console.log(`component did update, state changed, name value = ${name}`)
-    console.log(`component did update, state changed, value value = ${value}`)
-    console.log(`component did update state changed, state value = ${JSON.stringify(state[name])}`)
     setParentState((prevState: any) => {
-      return { ...prevState, [name]: hiddenConstValue || state[name] || '' }
+      return {
+        ...prevState,
+        [name]:
+          hiddenConstValue ||
+          (typeof state?.[name] === 'object' ? '' : state?.[name]) ||
+          defaultInputValue ||
+          ''
+      }
     })
-    // setParentState({ ...parentState, [name]: state[name] })
   }, [state])
 
   return (
@@ -200,38 +206,3 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   )
 }
 export default CustomFormRow
-
-export enum FormTypes {
-  TEXT = 'text',
-  EMAIL = 'email',
-  PASSWORD = 'password',
-  CHECKBOX = 'checkbox',
-  SELECT = 'select',
-  HIDDEN = 'hidden'
-}
-
-export interface IOption {
-  title?: string
-  checked?: boolean
-  value?: string
-}
-export interface IFormControl {
-  name: string
-  type: FormTypes
-  label: string
-  placeholder: string
-  variant?: 'outlined' | 'standard' | 'filled' | undefined
-  value?: string
-  options?: IOption[]
-  regexes?: IRegex[]
-  hiddenConstValue?: string
-}
-
-export interface IRegex {
-  description?: string
-  info?: string
-  warn?: string
-  error?: string
-  passed: boolean
-  value: any
-}

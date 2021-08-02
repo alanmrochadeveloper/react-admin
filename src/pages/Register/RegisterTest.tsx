@@ -29,9 +29,9 @@ const RegisterTest: React.FC<RegisterTestProps> = () => {
         role_id: initialRoleID
       })
       clearAllFields()
-      console.log(data.data)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error) {
-      if (error.response) {
+      if (error?.response) {
         console.log(`error response = ${JSON.stringify(error.response)}`)
       }
     }
@@ -44,14 +44,6 @@ const RegisterTest: React.FC<RegisterTestProps> = () => {
     setPassword('')
     setConfirmPassword('')
   }
-
-  React.useEffect(() => {
-    const _getRole = async () => {
-      // const response = await axios.get('http://localhost:8000/api/roles')
-      // return response
-    }
-    // console.log(`roles = ${JSON.stringify(_getRole())}`)
-  }, [])
 
   return (
     <>

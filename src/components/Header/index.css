@@ -1,0 +1,13 @@
+.active {
+    /* opacity: 0.7; */
+    background-color: violet !important;
+    color: blueviolet !important;
+    text-decoration: wavy !important;
+}
+
+.active>.MuiListItemIcon-root {
+    opacity: 0.7;
+    background-color: violet !important;
+    color: blueviolet !important;
+    text-decoration: wavy !important;
+}

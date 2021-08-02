@@ -3,7 +3,8 @@
 // import { IOption } from '../types/interfaces/IOption'
 // import { IRegex } from '../types/interfaces/IRegex'
 
-import { FormTypes, IFormControl, IOption, IRegex } from '../components/CustomForm/FormRow'
+import { FormTypes } from '../components/CustomForm/types/enums/FormTypes'
+import { IFormControl, IOption, IRegex } from '../components/CustomForm/types/interfaces'
 
 export const createControlsData = (
   name = 'none', // names must be unique

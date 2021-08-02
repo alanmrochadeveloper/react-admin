@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 import { IUser } from '../types/interfaces/IUser'
 
 function createUserData(
@@ -5,7 +6,10 @@ function createUserData(
   name: string,
   orders: string,
   products: string,
-  accessLevel: string
+  accessLevel: string,
+  first_name: string = '',
+  last_name: string = '',
+  email: string = ''
 ): IUser {
   return { id, name, orders, products, accessLevel }
 }
