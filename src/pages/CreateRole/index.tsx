@@ -10,7 +10,7 @@ import DashboardWrapper from '../../components/DashboardWrapper'
 import { IFormControl } from '../../types/interfaces/IFormControl'
 
 const axiosRequest: IAxiosRequest = {
-  url: '/roles',
+  url: '/role',
   requestType: RequestType.POST
 }
 
@@ -37,7 +37,7 @@ const CreateRole: React.FC<CreateRoleProps> = () => {
     if (permissions.length > 0) {
       setControls([
         createControlsData('name', FormTypes.TEXT, 'Role name', 'type role name'),
-        createControlsData('permissions', FormTypes.CHECKBOX, 'Permissions', '', '', [
+        createControlsData('ids', FormTypes.CHECKBOX, 'Permissions', '', '', [
           ...permissions.map(perm => {
             return { title: perm.name, checked: false, value: perm.id }
           })

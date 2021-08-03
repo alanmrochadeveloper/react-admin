@@ -9,6 +9,7 @@ import {
   MenuItem,
   TextField
 } from '@material-ui/core'
+import { check } from 'prettier'
 import React, { Dispatch } from 'react'
 import { FormTypes } from './types/enums/FormTypes'
 import { IFormControl, IOption } from './types/interfaces'
@@ -44,7 +45,7 @@ const formControl = (
                           onChange={handleChange}
                           name={name}
                           id={idx.toString()}
-                          value={state?.[name[idx]]?.id}
+                          value={state?.[name[idx]]?.id || value}
                           defaultChecked={options[idx].checked}
                         />
                       }
@@ -123,6 +124,7 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
 
   const [state, setState] = React.useState<any | null | undefined>({ ...parentState })
   const [checks, setChecks] = React.useState<IOption[]>(options)
+  const [checkIds, setCheckIds] = React.useState<string[]>([])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (type) {
@@ -181,13 +183,35 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
     console.log(
       `checks changed, value = ${JSON.stringify(checks)}, state = ${JSON.stringify(state)}`
     )
+
+    setCheckIds((prevState: string[]) => {
+      return [
+        ...prevState,
+        ...checks
+          .map(ck => {
+            if (
+              !prevState.includes(ck.value) &&
+              ck.checked &&
+              ck.value !== undefined &&
+              ck.value !== null
+            )
+              return ck.value
+            prevState.pop()
+            return null
+          })
+          .filter(c => c !== null && c !== undefined)
+      ]
+    })
+  }, [checks])
+
+  React.useEffect(() => {
     setState((prevState: any) => {
       return {
         ...prevState,
-        [name]: checks
+        [name]: checkIds
       }
     })
-  }, [checks])
+  }, [checkIds])
 
   React.useEffect(() => {
     setParentState((prevState: any) => {

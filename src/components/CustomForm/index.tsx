@@ -56,7 +56,11 @@ const CustomForm: React.FC<CustomFormProps> = ({
     setParentState((prevState: any) => {
       let newState: any = { ...prevState }
       for (const prop in prevState) {
-        if (typeof prop === 'string') {
+        if (Array.isArray(prevState[prop])) {
+          console.log(`prop = ${prop} is array!`)
+          newState = { ...newState, [prop]: [] }
+        } else if (typeof prop === 'string') {
+          console.log(`prop = ${prop} is string!`)
           newState = { ...newState, [prop]: '' }
         }
       }
