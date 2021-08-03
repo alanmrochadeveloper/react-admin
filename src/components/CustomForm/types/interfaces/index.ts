@@ -37,3 +37,8 @@ export interface IAxiosRequest {
   config?: IAxiosConfig
   requestType: RequestType
 }
+
+export interface IPermission {
+  id: string
+  name: string
+}

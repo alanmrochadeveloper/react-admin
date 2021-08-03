@@ -22,6 +22,10 @@ import ListItemText from '@material-ui/core/ListItemText'
 import InboxIcon from '@material-ui/icons/MoveToInbox'
 import MailIcon from '@material-ui/icons/Mail'
 import MoreIcon from '@material-ui/icons/MoreVert'
+import NotInterestedRoundedIcon from '@material-ui/icons/NotInterestedRounded'
+import PeopleAltRoundedIcon from '@material-ui/icons/PeopleAltRounded'
+import VpnKeyIcon from '@material-ui/icons/VpnKey'
+import { DashboardRounded } from '@material-ui/icons'
 import SearchIcon from '@material-ui/icons/Search'
 import { Badge, Hidden, Menu, MenuItem } from '@material-ui/core'
 import { Link, NavLink, useHistory } from 'react-router-dom'
@@ -231,6 +235,19 @@ const Header: React.FC<HeaderProps> = () => {
     </Menu>
   )
 
+  const renderIcon = (iconNameValue: string) => {
+    switch (iconNameValue) {
+      case 'dashboard':
+        return <DashboardRounded />
+      case 'users':
+        return <PeopleAltRoundedIcon />
+      case 'roles':
+        return <VpnKeyIcon />
+      default:
+        return <NotInterestedRoundedIcon />
+    }
+  }
+
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -385,10 +402,10 @@ const Header: React.FC<HeaderProps> = () => {
         </div>
         <Divider />
         <List>
-          {drawerNavButtons.map(({ text, url }, index) => (
+          {drawerNavButtons.map(({ text, url, iconName }, index) => (
             <NavLink exact key={text} to={url} style={{ textDecoration: 'none' }}>
               <ListItem button selected={history.location.pathname === url}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                <ListItemIcon>{renderIcon(iconName)}</ListItemIcon>
                 <ListItemText primary={text} />
               </ListItem>
             </NavLink>

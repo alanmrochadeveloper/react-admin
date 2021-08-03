@@ -44,7 +44,7 @@ const formControl = (
                           onChange={handleChange}
                           name={name}
                           id={idx.toString()}
-                          value={value}
+                          value={state?.[name[idx]]?.id}
                           defaultChecked={options[idx].checked}
                         />
                       }
@@ -178,6 +178,9 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   }, [])
 
   React.useEffect(() => {
+    console.log(
+      `checks changed, value = ${JSON.stringify(checks)}, state = ${JSON.stringify(state)}`
+    )
     setState((prevState: any) => {
       return {
         ...prevState,
@@ -192,7 +195,7 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         ...prevState,
         [name]:
           hiddenConstValue ||
-          (typeof state?.[name] === 'object' ? '' : state?.[name]) ||
+          (typeof state?.[name] === 'object' && type !== FormTypes.CHECKBOX ? '' : state?.[name]) ||
           defaultInputValue ||
           ''
       }

@@ -10,8 +10,10 @@ import DashboardWrapper from '../../components/DashboardWrapper'
 import { Role } from '../../models/role'
 import { User } from '../../models/user'
 
-interface EditUserProps {}
-const EditUser: React.FC<EditUserProps> = () => {
+interface EditUserProps {
+  match: any
+}
+const EditUser: React.FC<EditUserProps> = ({ match }: EditUserProps) => {
   const { id }: { id: string } = useParams()
   let axiosRequest: IAxiosRequest = {
     url: `/users/${id}`,
@@ -24,6 +26,8 @@ const EditUser: React.FC<EditUserProps> = () => {
   const history = useHistory()
 
   React.useEffect(() => {
+    // console.log(`edit user component did mount, id from match.params.id = ${match.params.id} `)
+    // above is way to use params which works pretty well without hook useParams()
     ;(async () => {
       try {
         if (history.location.pathname.includes(id)) {

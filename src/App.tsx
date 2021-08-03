@@ -4,18 +4,17 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Footer from './components/Footer'
 import Dashboard from './pages/Dashboard'
 import Users from './pages/Users'
-import Header from './components/Header'
 import Main from './components/Main'
 import Emails from './pages/Emails'
-import { mockUsers } from './Mock/users'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import RegisterTest from './pages/Register/RegisterTest'
 import CreateUser from './pages/CreateUser'
 import EditUser from './pages/EditUser'
+import Roles from './pages/Roles'
+import CreateRole from './pages/CreateRole'
 
 function App() {
-  const users = mockUsers
   return (
     <Router>
       <div className="App">
@@ -30,6 +29,8 @@ function App() {
             <Route exact path="/registertest" component={RegisterTest} />
             <Route exact path="/createuser" component={CreateUser} />
             <Route exact path="/edituser/:id" component={EditUser} />
+            <Route exact path="/roles" component={Roles} />
+            <Route exact path="/createrole" component={CreateRole} />
           </Main>
         </Switch>
         <Footer />

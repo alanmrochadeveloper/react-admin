@@ -1,7 +1,8 @@
-import { Button, Grid, Typography } from '@material-ui/core'
+import { Button, Grid, IconButton, Typography } from '@material-ui/core'
+import ArrowBackRoundedIcon from '@material-ui/icons/ArrowBackRounded'
 import axios from 'axios'
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, useHistory } from 'react-router-dom'
 import CustomFormRow from './FormRow'
 import { RequestType } from './types/enums/FormTypes'
 import { IAxiosRequest, IFormControl } from './types/interfaces'
@@ -20,6 +21,7 @@ interface CustomFormProps {
   googleLogin?: boolean
   facebookLogin?: boolean
   githubLogin?: boolean
+  backButton?: boolean
   test?: boolean
   redirectUrl?: string
 }
@@ -37,10 +39,12 @@ const CustomForm: React.FC<CustomFormProps> = ({
   facebookLogin = false,
   githubLogin = false,
   test = false,
-  redirectUrl = ''
+  redirectUrl = '',
+  backButton = false
 }: CustomFormProps) => {
   const [parentState, setParentState] = React.useState<any | null | undefined>(null)
   const [isRegistered, setIsRegistered] = React.useState<boolean>(false)
+  const history = useHistory()
 
   const handleGetState = () => {
     console.log(`
@@ -201,6 +205,29 @@ const CustomForm: React.FC<CustomFormProps> = ({
               <Grid item>
                 <Button variant="outlined" color="secondary" onClick={handleGetState}>
                   getState
+                </Button>
+              </Grid>
+            </Grid>
+          ) : null}
+          {backButton ? (
+            <Grid
+              container
+              item
+              justifyContent="space-evenly"
+              style={{ marginTop: '0.9rem', marginBottom: '0.9rem' }}
+            >
+              <Grid item>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    // eslint-disable-next-line no-unused-expressions
+                    history.go(-1)
+                  }}
+                >
+                  <IconButton>
+                    <ArrowBackRoundedIcon />
+                  </IconButton>
                 </Button>
               </Grid>
             </Grid>
