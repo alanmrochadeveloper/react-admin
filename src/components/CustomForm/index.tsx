@@ -44,6 +44,8 @@ const CustomForm: React.FC<CustomFormProps> = ({
 }: CustomFormProps) => {
   const [parentState, setParentState] = React.useState<any | null | undefined>(null)
   const [isRegistered, setIsRegistered] = React.useState<boolean>(false)
+  const [isUploaded, setIsUploaded] = React.useState<boolean>(false)
+
   const history = useHistory()
 
   const handleGetState = () => {
@@ -80,7 +82,9 @@ const CustomForm: React.FC<CustomFormProps> = ({
           break
         case RequestType.PUT:
           console.log(
-            `insider put request, url = ${url}, parentState = ${parentState}, config = ${config}`
+            `insider put request, url = ${url}, parentState = ${JSON.stringify(
+              parentState
+            )}, config = ${config}`
           )
           data = await axios.put(url, parentState, config)
           setIsRegistered(true)
@@ -92,12 +96,28 @@ const CustomForm: React.FC<CustomFormProps> = ({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error) {
       if (error) {
-        if (error?.response) {
-          console.log(`error response = ${JSON.stringify(error?.response)}`)
+        if (error) {
+          console.log(`error response = ${JSON.stringify(error)}`)
         }
       }
     }
   }
+
+  const handleUpload = async () => {
+    setIsUploaded((prevState: boolean) => !prevState)
+    return
+    try {
+      const { data } = await axios.post(`upload`)
+      setParentState((prevState: any) => {
+        return { ...prevState, image: data.url }
+      })
+      setIsUploaded(true)
+      console.log(`uploaded image url = ${JSON.stringify(data.url)}`)
+    } catch (error) {
+      console.log(`error = ${JSON.stringify(error)}`)
+    }
+  }
+
   React.useEffect(() => {
     console.log(`custom form did mount!`)
     setParentState((prevState: any) => {
@@ -120,8 +140,17 @@ const CustomForm: React.FC<CustomFormProps> = ({
     return () => {
       console.log(`custom form unmounted`)
       setParentState(null)
+      setIsRegistered(false)
     }
   }, [])
+
+  React.useEffect(() => {
+    console.log(`isRegistered changed = ${isRegistered}`)
+  }, [isRegistered])
+
+  React.useEffect(() => {
+    console.log(`in custom form, is uploaded changed = ${isUploaded}`)
+  }, [isUploaded])
 
   return (
     <>
@@ -142,6 +171,9 @@ const CustomForm: React.FC<CustomFormProps> = ({
                   index={index}
                   setParentState={setParentState}
                   parentState={parentState}
+                  isUploaded={isUploaded}
+                  setIsUploaded={setIsUploaded}
+                  handleUpload={handleUpload}
                 />
               </Grid>
             ))}

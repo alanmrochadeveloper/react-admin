@@ -85,7 +85,7 @@ const Users: React.FC<UsersProps> = () => {
 
   return (
     <DashboardWrapper>
-      <Button variant="contained" onClick={() => history.push('/createuser')}>
+      <Button variant="contained" onClick={() => history.push('/users/create')}>
         Create user
       </Button>
       <TableContainer>

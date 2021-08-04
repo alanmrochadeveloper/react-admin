@@ -2,13 +2,13 @@ import { Button, makeStyles, TableCell, TableRow, Theme } from '@material-ui/cor
 import axios from 'axios'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { User } from '../../models/user'
+import { Product } from '../../models/product'
 
-interface UserTableRowProps {
-  user: User
+interface ProductTableRowProps {
+  product: Product
   index: number
-  setUsers: any
-  users: User[]
+  setProducts: any
+  products: Product[]
 }
 
 const useStyle = makeStyles((theme: Theme) => ({
@@ -22,31 +22,31 @@ const useStyle = makeStyles((theme: Theme) => ({
   }
 }))
 
-const UserTableRow: React.FC<UserTableRowProps> = ({
-  user,
+const ProductTableRow: React.FC<ProductTableRowProps> = ({
+  product,
   index,
-  setUsers,
-  users
-}: UserTableRowProps) => {
+  setProducts,
+  products
+}: ProductTableRowProps) => {
   const classes = useStyle()
   const history = useHistory()
 
   const handleClickEdit = () => {
-    history.push(`users/${user.id}/edit`)
+    history.push(`products/${product.id}/edit`)
   }
 
   const handleClickDelete = async () => {
     if (
       window.confirm(
-        `Tem certeza que deseja deletar o usuário ${user.first_name} com o id ${user.id}`
+        `Tem certeza que deseja deletar o produto ${product.title} com o id ${product.id}`
       )
     ) {
       try {
-        await axios.delete(`users/${user.id}`, { withCredentials: true })
-        setUsers((prevState: User[]) => {
-          return prevState.filter((u: User) => u.id !== user.id)
+        await axios.delete(`products/${product.id}`, { withCredentials: true })
+        setProducts((prevState: Product[]) => {
+          return prevState.filter((u: Product) => u.id !== product.id)
         })
-        alert(`Usuário deletado com sucesso!`)
+        alert(`Produto deletado com sucesso!`)
       } catch (error) {
         alert(`error = ${error.message}`)
         console.log(`error = ${JSON.stringify(error.message)}`)
@@ -58,15 +58,16 @@ const UserTableRow: React.FC<UserTableRowProps> = ({
     <>
       <TableRow
         hover
-        key={user && user.id && user.id}
+        key={product && product.id && product.id}
         style={{ backgroundColor: `${index % 2 === 0 ? '#e2e2e2' : 'inherit'}` }}
       >
         <TableCell component="th" scope="user">
-          {user && user.id && user.id.substr(0, 5)}
+          {product && product.id && product.id.substr(0, 5)}
         </TableCell>
-        <TableCell align="right">{`${user.first_name} ${user.last_name}`}</TableCell>
-        <TableCell align="right">{user.email}</TableCell>
-        <TableCell align="right">{user.role?.name}</TableCell>
+        <TableCell align="right">{product.image}</TableCell>
+        <TableCell align="right">{product.title}</TableCell>
+        <TableCell align="right">{product.description}</TableCell>
+        <TableCell align="right">{product.price}</TableCell>
         <TableCell align="right">
           <Button variant="contained" className={classes.deleteButton} onClick={handleClickDelete}>
             Delete
@@ -79,4 +80,4 @@ const UserTableRow: React.FC<UserTableRowProps> = ({
     </>
   )
 }
-export default UserTableRow
+export default ProductTableRow

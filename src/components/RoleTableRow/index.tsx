@@ -41,7 +41,7 @@ const RoleTableRow: React.FC<RoleTableRowProps> = ({
   const history = useHistory()
 
   const handleClickEdit = () => {
-    history.push(`editrole/${role.id}`)
+    history.push(`roles/${role.id}/edit`)
   }
 
   const handleClickDelete = async () => {

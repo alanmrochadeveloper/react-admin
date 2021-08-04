@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import InputBase from '@material-ui/core/InputBase'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
@@ -30,7 +31,6 @@ import SearchIcon from '@material-ui/icons/Search'
 import { Badge, Hidden, Menu, MenuItem } from '@material-ui/core'
 import { Link, NavLink, useHistory } from 'react-router-dom'
 import { drawerNavButtons } from '../../Mock/drawerNavButtons'
-import { IUser } from '../../types/interfaces/IUser'
 import { User } from '../../models/user'
 import './index.css'
 
@@ -243,6 +243,8 @@ const Header: React.FC<HeaderProps> = () => {
         return <PeopleAltRoundedIcon />
       case 'roles':
         return <VpnKeyIcon />
+      case 'products':
+        return <LibraryBooksIcon />
       default:
         return <NotInterestedRoundedIcon />
     }

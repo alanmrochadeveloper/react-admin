@@ -39,18 +39,18 @@ const Register: React.FC<RegisterProps> = () => {
       'Confirm password',
       'Confirm your password'
     ),
-    createControlsData(
-      'checkPaymentPreferences',
-      FormTypes.CHECKBOX,
-      'Payment preferences',
-      '',
-      '',
-      [
-        { title: 'installment', checked: true, value: 'installment' },
-        { title: 'credit card', checked: true, value: 'creditCard' },
-        { title: 'debit card', checked: false, value: 'debitCard' }
-      ]
-    ),
+    // createControlsData(
+    //   'checkPaymentPreferences',
+    //   FormTypes.CHECKBOX,
+    //   'Payment preferences',
+    //   '',
+    //   '',
+    //   [
+    //     { title: 'installment', checked: true, value: 'installment' },
+    //     { title: 'credit card', checked: true, value: 'creditCard' },
+    //     { title: 'debit card', checked: false, value: 'debitCard' }
+    //   ]
+    // ),
     createControlsData('role_id', FormTypes.HIDDEN, 'role_id', '', '', [], [], initialRoleID)
     // createControlsData('teste', FormTypes.TEXT, 'Isso é um teste', 'apenas testando'),
     // createControlsData('areYouFoul', FormTypes.SELECT, 'Você é bobo?', '', [
@@ -84,6 +84,7 @@ const Register: React.FC<RegisterProps> = () => {
               googleButtonText="login com o google"
               test
               redirectUrl="/login"
+              backButton
             />
           </Grid>
         </Grid>

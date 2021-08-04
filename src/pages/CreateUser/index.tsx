@@ -4,11 +4,10 @@ import axios from 'axios'
 import React from 'react'
 import CustomForm from '../../components/CustomForm'
 import { FormTypes, RequestType } from '../../components/CustomForm/types/enums/FormTypes'
-import { IAxiosRequest, IOption } from '../../components/CustomForm/types/interfaces'
+import { IAxiosRequest, IFormControl, IOption } from '../../components/CustomForm/types/interfaces'
 import { createControlsData } from '../../components/CustomForm/Utils/CreateFormControl'
 import DashboardWrapper from '../../components/DashboardWrapper'
 import { Role } from '../../models/role'
-import { IFormControl } from '../../types/interfaces/IFormControl'
 
 const axiosRequest: IAxiosRequest = {
   url: '/users',

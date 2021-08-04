@@ -1,10 +1,12 @@
 export enum FormTypes {
   TEXT = 'text',
   EMAIL = 'email',
+  NUMBER = 'number',
   PASSWORD = 'password',
   CHECKBOX = 'checkbox',
   SELECT = 'select',
-  HIDDEN = 'hidden'
+  HIDDEN = 'hidden',
+  FILE = 'file'
 }
 
 export enum RequestType {

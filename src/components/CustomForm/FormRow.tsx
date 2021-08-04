@@ -1,109 +1,30 @@
 import {
   Box,
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
   FormGroup,
   FormHelperText,
   FormLabel,
+  IconButton,
   MenuItem,
   TextField
 } from '@material-ui/core'
-import { check } from 'prettier'
+import CloudUploadIcon from '@material-ui/icons/CloudUpload'
+import CloudDoneIcon from '@material-ui/icons/CloudDone'
+import axios from 'axios'
 import React, { Dispatch } from 'react'
 import { FormTypes } from './types/enums/FormTypes'
 import { IFormControl, IOption } from './types/interfaces'
-
-const formControl = (
-  name: string,
-  type: string,
-  label: string,
-  placeholder: string,
-  defaultInputValue: string,
-  options: IOption[] = [],
-  index: number,
-  variant: 'outlined' | 'standard' | 'filled' | undefined = 'outlined',
-  state: any,
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-  hiddenConstValue?: string
-) => {
-  switch (type) {
-    case FormTypes.CHECKBOX:
-      return (
-        <>
-          {options.length > 0 && (
-            <FormControl component="fieldset">
-              <FormLabel component="legend">{`${label}: `}</FormLabel>
-              <FormGroup>
-                {options.map(({ title, value }, idx: number) => {
-                  return (
-                    <FormControlLabel
-                      key={name + title}
-                      control={
-                        <Checkbox
-                          checked={state?.[name[idx]]}
-                          onChange={handleChange}
-                          name={name}
-                          id={idx.toString()}
-                          value={state?.[name[idx]]?.id || value}
-                          defaultChecked={options[idx].checked}
-                        />
-                      }
-                      label={title}
-                    />
-                  )
-                })}
-              </FormGroup>
-              <FormHelperText>Alert</FormHelperText>
-            </FormControl>
-          )}
-        </>
-      )
-    case FormTypes.SELECT:
-      return (
-        <TextField
-          variant={variant}
-          label={label}
-          select
-          style={{ width: '100%' }}
-          onChange={handleChange}
-          value={state?.[name]}
-          defaultValue={defaultInputValue}
-        >
-          {options.length > 0 &&
-            options.map(({ title, value }, idx) => (
-              <MenuItem
-                key={title + value}
-                value={value}
-                selected={state?.[name]?.[title + value]?.checked}
-              >
-                {title}
-              </MenuItem>
-            ))}
-        </TextField>
-      )
-    case FormTypes.HIDDEN:
-      return <input name={name} type={type} value={hiddenConstValue} />
-    default:
-      return (
-        <TextField
-          name={name}
-          type={type}
-          label={label}
-          placeholder={placeholder || ''}
-          variant={variant}
-          value={state?.[name]}
-          onChange={handleChange}
-          defaultValue={defaultInputValue || ''}
-        />
-      )
-  }
-}
 
 interface CustomFormRowProps extends IFormControl {
   index: number
   setParentState: Dispatch<any>
   parentState: any[]
+  setIsUploaded: any
+  isUploaded: boolean
+  handleUpload: any
 }
 const CustomFormRow: React.FC<CustomFormRowProps> = ({
   name,
@@ -114,17 +35,149 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   options = [],
   index,
   variant = 'outlined',
-  value = '',
   hiddenConstValue = '',
   setParentState,
   parentState,
-  regexes = []
+  regexes = [],
+  setIsUploaded,
+  isUploaded,
+  handleUpload
 }: CustomFormRowProps) => {
-  const [control, setControl] = React.useState<React.ReactElement>()
+  const [control, setControl] = React.useState<any>()
 
   const [state, setState] = React.useState<any | null | undefined>({ ...parentState })
   const [checks, setChecks] = React.useState<IOption[]>(options)
   const [checkIds, setCheckIds] = React.useState<string[]>([])
+
+  const formControl = (
+    nameValue: string,
+    typeValue: string,
+    labelValue: string,
+    placeholderValue: string,
+    defaultInputValueValue: string,
+    optionsValue: IOption[] = [],
+    indexValue: number,
+    variantValue: 'outlined' | 'standard' | 'filled' | undefined = 'outlined',
+    stateValue: any,
+    handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    hiddenConstValueValue?: string
+  ) => {
+    switch (typeValue) {
+      case FormTypes.CHECKBOX:
+        return (
+          <>
+            {optionsValue.length > 0 && (
+              <FormControl component="fieldset">
+                <FormLabel component="legend">{`${labelValue}: `}</FormLabel>
+                <FormGroup>
+                  {optionsValue.map(({ title, value }, idx: number) => {
+                    return (
+                      <FormControlLabel
+                        key={nameValue + title}
+                        control={
+                          <Checkbox
+                            checked={stateValue?.[nameValue[idx]]}
+                            onChange={handleChange}
+                            name={nameValue}
+                            id={idx.toString()}
+                            value={stateValue?.[nameValue[idx]]?.id || value}
+                            defaultChecked={optionsValue[idx].checked}
+                          />
+                        }
+                        label={title}
+                      />
+                    )
+                  })}
+                </FormGroup>
+                <FormHelperText>Alert</FormHelperText>
+              </FormControl>
+            )}
+          </>
+        )
+      case FormTypes.SELECT:
+        return (
+          <TextField
+            variant={variantValue}
+            label={labelValue}
+            select
+            style={{ width: '100%' }}
+            onChange={handleChange}
+            value={stateValue?.[nameValue]}
+            defaultValue={defaultInputValueValue}
+          >
+            {optionsValue.length > 0 &&
+              optionsValue.map(({ title, value }, idx) => (
+                <MenuItem
+                  key={title + value}
+                  value={value}
+                  selected={stateValue?.[nameValue]?.[title + value]?.checked}
+                >
+                  {title}
+                </MenuItem>
+              ))}
+          </TextField>
+        )
+      case FormTypes.HIDDEN:
+        return <input name={nameValue} type={typeValue} value={hiddenConstValueValue} />
+      case FormTypes.FILE:
+        return (
+          <>
+            <Box>
+              <Box>
+                <TextField
+                  disabled
+                  name={nameValue}
+                  type="text"
+                  label={labelValue}
+                  variant={variantValue}
+                  value={stateValue?.[nameValue] as string}
+                  defaultValue={defaultInputValueValue || ''}
+                />
+              </Box>
+              <Box>
+                <TextField
+                  style={{ maxWidth: '12.8rem' }}
+                  name={nameValue}
+                  type={typeValue}
+                  variant={variantValue}
+                  value={stateValue?.[nameValue]}
+                  onChange={handleChange}
+                  defaultValue={defaultInputValueValue || ''}
+                />
+              </Box>
+              <Box textAlign="center">
+                {console.log(`rendered method render of upload icon, isUploaded = ${isUploaded}`)}
+                {!isUploaded ? (
+                  <IconButton onClick={handleUpload}>
+                    <CloudUploadIcon />
+                  </IconButton>
+                ) : (
+                  <IconButton
+                    disabled={isUploaded}
+                    style={isUploaded ? { backgroundColor: 'green' } : { backgroundColor: 'grey' }}
+                  >
+                    <CloudDoneIcon />
+                  </IconButton>
+                )}
+              </Box>
+            </Box>
+          </>
+        )
+      default:
+        return (
+          <TextField
+            name={nameValue}
+            type={typeValue}
+            label={labelValue}
+            placeholder={placeholderValue || ''}
+            variant={variantValue}
+            value={stateValue?.[nameValue]}
+            onChange={handleChange}
+            defaultValue={defaultInputValueValue || ''}
+          />
+        )
+    }
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     switch (type) {
@@ -143,6 +196,9 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         break
       case FormTypes.SELECT:
         setState({ ...state, [name]: event.target.value as string })
+        break
+      case FormTypes.FILE:
+        setState({ ...state, [name]: event.target.files })
         break
       default:
         setState({ ...state, [event.target.name]: event.target.value })
@@ -184,23 +240,12 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
       `checks changed, value = ${JSON.stringify(checks)}, state = ${JSON.stringify(state)}`
     )
 
-    setCheckIds((prevState: string[]) => {
-      return [
-        ...prevState,
-        ...checks
-          .map(ck => {
-            if (
-              !prevState.includes(ck.value) &&
-              ck.checked &&
-              ck.value !== undefined &&
-              ck.value !== null
-            )
-              return ck.value
-            prevState.pop()
-            return null
-          })
-          .filter(c => c !== null && c !== undefined)
-      ]
+    setCheckIds(() => {
+      const newCheckList: IOption[] = checks.filter(c => c.checked)
+      const newCheckIdList: string[] = newCheckList.map(nc => {
+        return nc.value
+      })
+      return [...newCheckIdList]
     })
   }, [checks])
 
