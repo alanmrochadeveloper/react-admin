@@ -103,21 +103,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
     }
   }
 
-  const handleUpload = async () => {
-    setIsUploaded((prevState: boolean) => !prevState)
-    return
-    try {
-      const { data } = await axios.post(`upload`)
-      setParentState((prevState: any) => {
-        return { ...prevState, image: data.url }
-      })
-      setIsUploaded(true)
-      console.log(`uploaded image url = ${JSON.stringify(data.url)}`)
-    } catch (error) {
-      console.log(`error = ${JSON.stringify(error)}`)
-    }
-  }
-
   React.useEffect(() => {
     console.log(`custom form did mount!`)
     setParentState((prevState: any) => {
@@ -173,7 +158,6 @@ const CustomForm: React.FC<CustomFormProps> = ({
                   parentState={parentState}
                   isUploaded={isUploaded}
                   setIsUploaded={setIsUploaded}
-                  handleUpload={handleUpload}
                 />
               </Grid>
             ))}

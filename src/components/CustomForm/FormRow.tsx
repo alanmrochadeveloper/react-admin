@@ -17,6 +17,7 @@ import axios from 'axios'
 import React, { Dispatch } from 'react'
 import { FormTypes } from './types/enums/FormTypes'
 import { IFormControl, IOption } from './types/interfaces'
+import Loading from '../Loading'
 
 interface CustomFormRowProps extends IFormControl {
   index: number
@@ -24,7 +25,6 @@ interface CustomFormRowProps extends IFormControl {
   parentState: any[]
   setIsUploaded: any
   isUploaded: boolean
-  handleUpload: any
 }
 const CustomFormRow: React.FC<CustomFormRowProps> = ({
   name,
@@ -40,14 +40,18 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
   parentState,
   regexes = [],
   setIsUploaded,
-  isUploaded,
-  handleUpload
+  isUploaded
 }: CustomFormRowProps) => {
   const [control, setControl] = React.useState<any>()
 
-  const [state, setState] = React.useState<any | null | undefined>({ ...parentState })
+  const [state, setState] = React.useState<any | null | undefined>({
+    ...parentState
+  })
   const [checks, setChecks] = React.useState<IOption[]>(options)
   const [checkIds, setCheckIds] = React.useState<string[]>([])
+  const [imageUrl, setImageUrl] = React.useState<string>('')
+  const [imageFile, setImageFile] = React.useState(null)
+  const [loading, setLoading] = React.useState<boolean>(false)
 
   const formControl = (
     nameValue: string,
@@ -119,51 +123,7 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         )
       case FormTypes.HIDDEN:
         return <input name={nameValue} type={typeValue} value={hiddenConstValueValue} />
-      case FormTypes.FILE:
-        return (
-          <>
-            <Box>
-              <Box>
-                <TextField
-                  disabled
-                  name={nameValue}
-                  type="text"
-                  label={labelValue}
-                  variant={variantValue}
-                  value={stateValue?.[nameValue] as string}
-                  defaultValue={defaultInputValueValue || ''}
-                />
-              </Box>
-              <Box>
-                <TextField
-                  style={{ maxWidth: '12.8rem' }}
-                  name={nameValue}
-                  type={typeValue}
-                  variant={variantValue}
-                  value={stateValue?.[nameValue]}
-                  onChange={handleChange}
-                  defaultValue={defaultInputValueValue || ''}
-                />
-              </Box>
-              <Box textAlign="center">
-                {console.log(`rendered method render of upload icon, isUploaded = ${isUploaded}`)}
-                {!isUploaded ? (
-                  <IconButton onClick={handleUpload}>
-                    <CloudUploadIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton
-                    disabled={isUploaded}
-                    style={isUploaded ? { backgroundColor: 'green' } : { backgroundColor: 'grey' }}
-                  >
-                    <CloudDoneIcon />
-                  </IconButton>
-                )}
-              </Box>
-            </Box>
-          </>
-        )
-      default:
+      case FormTypes.TEXT:
         return (
           <TextField
             name={nameValue}
@@ -176,6 +136,49 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
             defaultValue={defaultInputValueValue || ''}
           />
         )
+      case FormTypes.PASSWORD:
+        return (
+          <TextField
+            name={nameValue}
+            type={typeValue}
+            label={labelValue}
+            placeholder={placeholderValue || ''}
+            variant={variantValue}
+            value={stateValue?.[nameValue]}
+            onChange={handleChange}
+            defaultValue={defaultInputValueValue || ''}
+          />
+        )
+      case FormTypes.NUMBER:
+        return (
+          <TextField
+            name={nameValue}
+            type={typeValue}
+            label={labelValue}
+            placeholder={placeholderValue || ''}
+            variant={variantValue}
+            value={stateValue?.[nameValue]}
+            onChange={handleChange}
+            defaultValue={defaultInputValueValue || ''}
+          />
+        )
+      default:
+        return null
+    }
+  }
+
+  const handleUpload = async () => {
+    setIsUploaded((prevState: boolean) => !prevState)
+    setLoading(true)
+    try {
+      const formData = new FormData()
+      formData.append('image', imageFile)
+      const { data } = await axios.post(`upload`, formData)
+      setImageUrl(data.url)
+      setIsUploaded(true)
+      setLoading(false)
+    } catch (error) {
+      console.log(`error = ${JSON.stringify(error)}`)
     }
   }
 
@@ -195,17 +198,27 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
         })
         break
       case FormTypes.SELECT:
-        setState({ ...state, [name]: event.target.value as string })
+        setState((prevState: any) => {
+          return { ...prevState, [event.target.name]: event.target.value as string }
+        })
         break
       case FormTypes.FILE:
-        setState({ ...state, [name]: event.target.files })
+        setState((prevState: any) => {
+          return { ...prevState, [name]: imageUrl || event.target.value }
+        })
+        setImageFile(event.target.files[0])
         break
       default:
-        setState({ ...state, [event.target.name]: event.target.value })
+        setState((prevState: any) => {
+          return { ...prevState, [event.target.name]: event.target.value }
+        })
     }
   }
 
   React.useEffect(() => {
+    console.log(`component form row did mount state value = ${JSON.stringify(state)},
+      parent value = ${JSON.stringify(parentState)}
+    `)
     setControl(
       formControl(
         name,
@@ -222,6 +235,9 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
       )
     )
     setState((prevState: any) => {
+      console.log(
+        `inside setState component did mount, prevState value = ${JSON.stringify(prevState)}`
+      )
       const val = hiddenConstValue || state[name] || defaultInputValue || ''
 
       return { ...prevState, [name]: val }
@@ -271,9 +287,74 @@ const CustomFormRow: React.FC<CustomFormRowProps> = ({
     })
   }, [state])
 
+  React.useEffect(() => {
+    if (type === FormTypes.FILE)
+      setState((prevState: any) => {
+        return { ...prevState, [name]: imageUrl }
+      })
+  }, [imageUrl])
+
   return (
     <>
       <Box padding="0.4rem 0rem">{control}</Box>
+
+      {console.log(
+        `rendered method render of upload icon, isUploaded = ${isUploaded}, type === ${type}`
+      )}
+      {type === FormTypes.FILE ? (
+        <Box>
+          <Box>
+            <TextField
+              style={{ maxWidth: '15.39rem' }}
+              disabled={isUploaded}
+              name={name}
+              type={type}
+              variant={variant}
+              onChange={handleChange}
+            />
+          </Box>
+        </Box>
+      ) : null}
+      {type === FormTypes.FILE ? (
+        !isUploaded ? (
+          <Box textAlign="center">
+            <IconButton onClick={handleUpload}>
+              <CloudUploadIcon />
+            </IconButton>
+          </Box>
+        ) : loading ? (
+          <Box textAlign="center">
+            <Loading />
+          </Box>
+        ) : (
+          <Box>
+            <Box>
+              <Box>
+                <img
+                  style={{ maxWidth: '15.39rem' }}
+                  src={imageUrl}
+                  alt="product"
+                  title={imageUrl}
+                />
+              </Box>
+              <Box>
+                <TextField
+                  variant={variant}
+                  label="Image"
+                  InputProps={{ readOnly: true }}
+                  value={imageUrl}
+                  onChange={handleChange}
+                />
+              </Box>
+            </Box>
+            <Box textAlign="center">
+              <IconButton disabled={isUploaded}>
+                <CloudDoneIcon />
+              </IconButton>
+            </Box>
+          </Box>
+        )
+      ) : null}
     </>
   )
 }

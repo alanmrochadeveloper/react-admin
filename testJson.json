@@ -1,0 +1,30 @@
+error response = {
+  "message": "Request failed with status code 400",
+  "name": "Error",
+  "fileName": "http://localhost:4000/static/js/vendors~main.chunk.js",
+  "lineNumber": 184699,
+  "columnNumber": 15,
+  "stack": "createError@http://localhost:4000/static/js/vendors~main.chunk.js:184699:15\nsettle@http://localhost:4000/static/js/vendors~main.chunk.js:184933:12\nhandleLoad@http://localhost:4000/static/js/vendors~main.chunk.js:184173:13\nEventHandlerNonNull*dispatchXhrRequest@http://localhost:4000/static/js/vendors~main.chunk.js:184149:5\nxhrAdapter@http://localhost:4000/static/js/vendors~main.chunk.js:184128:10\ndispatchRequest@http://localhost:4000/static/js/vendors~main.chunk.js:184752:10\npromise callback*request@http://localhost:4000/static/js/vendors~main.chunk.js:184539:23\nforEachMethodWithData/Axios.prototype[method]@http://localhost:4000/static/js/vendors~main.chunk.js:184564:17\nwrap@http://localhost:4000/static/js/vendors~main.chunk.js:185094:15\nhandleSubmit@http://localhost:4000/static/js/main.chunk.js:1183:69\ncallCallback@http://localhost:4000/static/js/vendors~main.chunk.js:199947:18\ninvokeGuardedCallbackDev@http://localhost:4000/static/js/vendors~main.chunk.js:199996:20\ninvokeGuardedCallback@http://localhost:4000/static/js/vendors~main.chunk.js:200056:35\ninvokeGuardedCallbackAndCatchFirstError@http://localhost:4000/static/js/vendors~main.chunk.js:200071:29\nexecuteDispatch@http://localhost:4000/static/js/vendors~main.chunk.js:204306:46\nprocessDispatchQueueItemsInOrder@http://localhost:4000/static/js/vendors~main.chunk.js:204338:26\nprocessDispatchQueue@http://localhost:4000/static/js/vendors~main.chunk.js:204351:41\ndispatchEventsForPlugins@http://localhost:4000/static/js/vendors~main.chunk.js:204362:27\ndispatchEventForPluginEventSystem/<@http://localhost:4000/static/js/vendors~main.chunk.js:204573:16\nbatchedEventUpdates$1@http://localhost:4000/static/js/vendors~main.chunk.js:218258:16\nbatchedEventUpdates@http://localhost:4000/static/js/vendors~main.chunk.js:199745:16\ndispatchEventForPluginEventSystem@http://localhost:4000/static/js/vendors~main.chunk.js:204572:26\nattemptToDispatchEvent@http://localhost:4000/static/js/vendors~main.chunk.js:202055:40\ndispatchEvent@http://localhost:4000/static/js/vendors~main.chunk.js:201973:45\nunstable_runWithPriority@http://localhost:4000/static/js/vendors~main.chunk.js:234710:16\nrunWithPriority$1@http://localhost:4000/static/js/vendors~main.chunk.js:207353:14\ndiscreteUpdates$1@http://localhost:4000/static/js/vendors~main.chunk.js:218275:18\ndiscreteUpdates@http://localhost:4000/static/js/vendors~main.chunk.js:199757:16\ndispatchDiscreteEvent@http://localhost:4000/static/js/vendors~main.chunk.js:201939:22\nEventListener.handleEvent*addEventBubbleListener@http://localhost:4000/static/js/vendors~main.chunk.js:202061:14\naddTrappedEventListener@http://localhost:4000/static/js/vendors~main.chunk.js:204476:33\nlistenToNativeEvent@http://localhost:4000/static/js/vendors~main.chunk.js:204440:32\nlistenToAllSupportedEvents/<@http://localhost:4000/static/js/vendors~main.chunk.js:204391:32\nlistenToAllSupportedEvents@http://localhost:4000/static/js/vendors~main.chunk.js:204389:25\ncreateRootImpl@http://localhost:4000/static/js/vendors~main.chunk.js:221681:35\nReactDOMBlockingRoot@http://localhost:4000/static/js/vendors~main.chunk.js:221633:28\ncreateLegacyRoot@http://localhost:4000/static/js/vendors~main.chunk.js:221695:14\nlegacyCreateRootFromDOMContainer@http://localhost:4000/static/js/vendors~main.chunk.js:221772:14\nlegacyRenderSubtreeIntoContainer@http://localhost:4000/static/js/vendors~main.chunk.js:221797:48\nrender@http://localhost:4000/static/js/vendors~main.chunk.js:221893:14\n./src/index.tsx/<@http://localhost:4000/static/js/main.chunk.js:3977:50\n./src/index.tsx@http://localhost:4000/static/js/main.chunk.js:4062:30\n__webpack_require__@http://localhost:4000/static/js/bundle.js:852:31\nfn@http://localhost:4000/static/js/bundle.js:151:20\n1@http://localhost:4000/static/js/main.chunk.js:7277:18\n__webpack_require__@http://localhost:4000/static/js/bundle.js:852:31\ncheckDeferredModules@http://localhost:4000/static/js/bundle.js:46:23\nwebpackJsonpCallback@http://localhost:4000/static/js/bundle.js:33:19\n@http://localhost:4000/static/js/main.chunk.js:1:75\n",
+  "config": {
+    "url": "products",
+    "method": "post",
+    "data": "{\"title\":\"Product Test01\",\"description\":\"Description 01\",\"price\":\"5\",\"image\":\"http://localhost:8000/api/uploads/ef0469fc5151252e2c3bcd1b9f565a1a.png\"}",
+    "headers": {
+      "Accept": "application/json, text/plain, */*",
+      "Content-Type": "application/json;charset=utf-8"
+    },
+    "baseURL": "http://localhost:8000/api/",
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "withCredentials": true,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1
+  }
+} index.tsx: 101
